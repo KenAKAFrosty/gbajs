@@ -1,7 +1,7 @@
 body {
 	margin: 0;
 	font-family: 'Lucida Sans Typewriter', 'Monaco', 'Andale Mono', monospace;
-	background-color: #2A2F32;
+	background-color: #2A2F3200;
 	color: #DADDE1;
 	font-size: 13px;
 }
@@ -13,7 +13,7 @@ h3 {
 	padding: 0 6px 0 4px;
 	position: relative;
 	display: inline-block;
-	background-color: #2A2F32;
+	background-color: #2A2F3200;
 }
 
 #screen {
