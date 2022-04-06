@@ -1,30 +1,67 @@
 const gameWindow = document.querySelector('canvas');
+const buttonPressQueue = [];
+buttonToCode = {
+    'a': 90,
+    'b': 88,
+    'start': 13,
+    'select': 220,
+    'up': 38,
+    'down': 40,
+    'left': 37,
+    'right': 39,
+    'leftbumper': 65,
+    'rightbumper': 83
+}
 
-function pressButton(button){ 
-    buttonToCode = { 
-        'A':90,
-        'B':88,
-        'Start':13,
-        'Select':220,
-        'Up':38,
-        'Down':40,
-        'Left':37,
-        'Right':39,
-        'BumperL':65,
-        'BumperR':83
+
+function pressButtons(buttonsArray) {
+    const eventsArray = getEventsArray(buttonsArray);
+
+    if (!eventsArray) {
+        console.log("Found an invalid command. Please check your spelling.")
+        return null
+    };
+
+    for (const event of eventsArray) {
+        buttonPressQueue.push(event);
     }
+    emptyQueueAndFireEvents();
+}
 
-    if( ! buttonToCode[button] ) { return null };
+function getEventsArray(buttonsArray) {
+    let hasInvalidCommand = false;
 
-    const simulatedEvent = {
-        'keyCode': buttonToCode[button],
-        'bubbles':true,
-        'isTrusted':true,
-    }
+    const eventsArray = buttonsArray.map(button => {
+        const keyCode = buttonToCode[button.toLowerCase().trim()];
+        if (keyCode === undefined) { hasInvalidCommand = true }
 
-    const press = new KeyboardEvent('keydown', simulatedEvent);
-    const release = new KeyboardEvent('keyup',simulatedEvent)
+        const simulatedEvent = {
+            keyCode,
+            bubbles: true,
+            isTrusted: true,
+        }
+
+        return simulatedEvent
+
+    });
+
+    if (hasInvalidCommand) { return null }
+    else { return eventsArray }
+}
+
+
+function emptyQueueAndFireEvents() {
+    console.log(JSON.parse(JSON.stringify(buttonPressQueue)));
+    if (buttonPressQueue.length <= 0) { return null };
+
+    const nextEvent = buttonPressQueue.shift();
+
+    const press = new KeyboardEvent('keydown', nextEvent);
+    const release = new KeyboardEvent('keyup', nextEvent);
 
     gameWindow.dispatchEvent(press);
-    setTimeout( ()=>{ gameWindow.dispatchEvent(release) }, 50 )
+    setTimeout(() => {
+        gameWindow.dispatchEvent(release);
+        setTimeout(() => { emptyQueueAndFireEvents() }, 10)
+    }, 10)
 }

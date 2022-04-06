@@ -2,7 +2,7 @@ const streamerName = "KenAKAFrosty"
 
 
 
-async function startTwitchIntegration(){ 
+async function startTwitchIntegration() {
     ComfyJS.onReward = (user, reward, cost, message, extra) => {
         handleRewardRedemption(user, reward, cost, message, extra)
     }
@@ -12,18 +12,25 @@ async function startTwitchIntegration(){
 
 function handleRewardRedemption(user, reward, cost, message, extra) {
     console.log(user, reward, cost, message, extra)
-    const rewardNameToButton = { 
-        'Press Up 👆':'Up',
-        'Press Left 👈':'Left',
-        'Press Right 👉':'Right',
-        'Press Down 👇':'Down',
-        'Press A':'A',
-        'Press B':'B',
-        'Press Select':'Select',
-        'Press Start':'Start',
-        'Press Left Bumper':'BumperL',
-        'Press Right Bumper':'BumperR'
+    
+    if (reward === "Multi-input!") { 
+        const arrayOfButtons = message.split(",");
+        pressButtons(arrayOfButtons) 
+        return
     }
 
-    pressButton(rewardNameToButton[reward])
+    const rewardNameToButton = {
+        'Press Up 👆': 'Up',
+        'Press Left 👈': 'Left',
+        'Press Right 👉': 'Right',
+        'Press Down 👇': 'Down',
+        'Press A': 'A',
+        'Press B': 'B',
+        'Press Select': 'Select',
+        'Press Start': 'Start',
+        'Press Left Bumper': 'LeftBumper',
+        'Press Right Bumper': 'RightBumper'
+    }
+
+    pressButtons([rewardNameToButton[reward]])
 }
